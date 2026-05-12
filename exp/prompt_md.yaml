@@ -1,0 +1,77 @@
+prompts:
+  bm_dd_01:
+    text: "A sad and slow piano song for a rainy day"
+    difficulty: medium
+    category: baseline_dd
+  bm_dd_02:
+    text: "High energy rock music with strong drums"
+    difficulty: hard
+    category: baseline_dd
+  bm_dd_03:
+    text: "A calm and relaxing melody for meditation"
+    difficulty: medium
+    category: baseline_dd
+  bm_dd_04:
+    text: "Cyberpunk electronic music with synthesizer"
+    difficulty: hard
+    category: baseline_dd
+  bm_dd_05:
+    text: "Classical violin solo in minor key"
+    difficulty: medium
+    category: baseline_dd
+
+  bm_cm_01:
+    text: "A sad and slow piano song"
+    difficulty: medium
+    category: baseline_cm
+  bm_cm_02:
+    text: "High energy rock music"
+    difficulty: hard
+    category: baseline_cm
+  bm_cm_03:
+    text: "A calm meditation melody"
+    difficulty: medium
+    category: baseline_cm
+  bm_cm_04:
+    text: "Chinese folk style music"
+    difficulty: medium
+    category: baseline_cm
+  bm_cm_05:
+    text: "Jazz music with saxophone"
+    difficulty: medium
+    category: baseline_cm
+
+  bm_mc_01:
+    text: "A happy piano song in C major"
+    difficulty: medium
+    category: baseline_mc
+  bm_mc_02:
+    text: "Sad violin melody in minor key"
+    difficulty: medium
+    category: baseline_mc
+  bm_mc_03:
+    text: "Fast rock drum beat with high energy"
+    difficulty: hard
+    category: baseline_mc
+
+  bm_gm_01:
+    text: "High energy rock"
+    difficulty: hard
+    category: baseline_gm
+  bm_gm_02:
+    text: "Sad piano"
+    difficulty: medium
+    category: baseline_gm
+  bm_gm_03:
+    text: "Cyberpunk electronic"
+    difficulty: hard
+    category: baseline_gm
+
+evaluation:
+  num_repeats: 3
+  fixed_params:
+    num_steps: 50
+    temperature: 1.0
+    duration: 10.0
+    tempo: 120
+    velocity: 80

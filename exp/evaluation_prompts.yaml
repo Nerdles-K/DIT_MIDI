@@ -1,0 +1,174 @@
+# Evaluation Prompts for Text-to-MIDI Generation
+# ================================================
+# 30 diverse prompts covering different instruments, emotions, and keys
+# Difficulty levels: easy (single attribute), medium (2-3 attributes), hard (complex combinations)
+
+prompts:
+  # ==== EASY PROMPTS (10) ====
+  # Single instrument with basic attributes
+  
+  easy_01:
+    text: "piano melody in C"
+    difficulty: easy
+    category: basic_piano
+    
+  easy_02:
+    text: "guitar melody in G"
+    difficulty: easy
+    category: basic_guitar
+    
+  easy_03:
+    text: "violin melody in D"
+    difficulty: easy
+    category: basic_violin
+    
+  easy_04:
+    text: "flute melody in A"
+    difficulty: easy
+    category: basic_flute
+    
+  easy_05:
+    text: "drums rhythm pattern"
+    difficulty: easy
+    category: basic_drums
+    
+  easy_06:
+    text: "bass line in E"
+    difficulty: easy
+    category: basic_bass
+    
+  easy_07:
+    text: "trumpet melody in F"
+    difficulty: easy
+    category: basic_trumpet
+    
+  easy_08:
+    text: "saxophone melody in Bb"
+    difficulty: easy
+    category: basic_sax
+    
+  easy_09:
+    text: "cello melody in C"
+    difficulty: easy
+    category: basic_cello
+    
+  easy_10:
+    text: "harp melody in G"
+    difficulty: easy
+    category: basic_harp
+
+  # ==== MEDIUM PROMPTS (10) ====
+  # 2-3 attributes combined
+  
+  medium_01:
+    text: "happy piano melody in C"
+    difficulty: medium
+    category: emotion_piano
+    
+  medium_02:
+    text: "sad violin melody in Am"
+    difficulty: medium
+    category: emotion_violin
+    
+  medium_03:
+    text: "energetic guitar melody in E"
+    difficulty: medium
+    category: emotion_guitar
+    
+  medium_04:
+    text: "calm flute melody in D"
+    difficulty: medium
+    category: emotion_flute
+    
+  medium_05:
+    text: "fast piano melody in G"
+    difficulty: medium
+    category: tempo_piano
+    
+  medium_06:
+    text: "slow saxophone melody in F"
+    difficulty: medium
+    category: tempo_sax
+    
+  medium_07:
+    text: "loud drums rhythm pattern"
+    difficulty: medium
+    category: intensity_drums
+    
+  medium_08:
+    text: "soft piano melody in A"
+    difficulty: medium
+    category: intensity_piano
+    
+  medium_09:
+    text: "bright trumpet melody in D"
+    difficulty: medium
+    category: timbre_trumpet
+    
+  medium_10:
+    text: "dark cello melody in Em"
+    difficulty: medium
+    category: timbre_cello
+
+  # ==== HARD PROMPTS (10) ====
+  # Complex combinations with multiple attributes
+  
+  hard_01:
+    text: "happy energetic piano melody in C major"
+    difficulty: hard
+    category: complex_piano
+    
+  hard_02:
+    text: "sad slow violin melody in D minor"
+    difficulty: hard
+    category: complex_violin
+    
+  hard_03:
+    text: "calm soft flute melody in G major"
+    difficulty: hard
+    category: complex_flute
+    
+  hard_04:
+    text: "bright loud trumpet melody in F major"
+    difficulty: hard
+    category: complex_trumpet
+    
+  hard_05:
+    text: "dark mysterious cello melody in A minor"
+    difficulty: hard
+    category: complex_cello
+    
+  hard_06:
+    text: "energetic fast guitar melody in E major"
+    difficulty: hard
+    category: complex_guitar
+    
+  hard_07:
+    text: "smooth relaxing saxophone melody in Bb major"
+    difficulty: hard
+    category: complex_sax
+    
+  hard_08:
+    text: "powerful intense drums rhythm pattern"
+    difficulty: hard
+    category: complex_drums
+    
+  hard_09:
+    text: "gentle flowing harp melody in D major"
+    difficulty: hard
+    category: complex_harp
+    
+  hard_10:
+    text: "groovy rhythmic bass line in A major"
+    difficulty: hard
+    category: complex_bass
+
+# Evaluation configuration
+evaluation:
+  num_repeats: 3  # Generate each prompt 3 times for statistical reliability
+  fixed_params:
+    num_steps: 50
+    temperature: 1.0
+    duration: 10.0
+    tempo: 120
+    velocity: 80

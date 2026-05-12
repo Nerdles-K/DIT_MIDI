@@ -1,0 +1,44 @@
+# ===== 大文件 / 数据集 / 模型 =====
+midi_data/
+logs/ckpts/
+logs/wandb/
+logs/runs/
+lightning_logs/
+
+# ===== 缓存与中间产物 =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ===== Python 环境 =====
+venv/
+.venv/
+env/
+.env
+
+# ===== 压缩包 / 生成的 MIDI =====
+*.tar.gz
+*.zip
+/generated.mid
+
+# ===== IDE / OS =====
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ===== Hydra 默认输出 =====
+outputs/
+multirun/
+
+# ===== 其它训练产物 =====
+*.ckpt
+*.pt
+*.pth

@@ -1,0 +1,162 @@
+# @package _global_
+
+# MIDI DiT Training Configuration for BabySlakh Dataset
+# ====================================================
+
+train: True
+patch_size: [16, 16]  # Time x Pitch patch size
+sample_rate: 16       # Quantization rate (1/16 notes)
+pitch_range: [21, 108]  # MIDI note range (88 keys)
+max_duration: 20.0    # Maximum track duration in seconds (reduced from 30 for speed)
+min_notes: 10         # Minimum notes per track
+
+log_every_n_steps: 100
+
+# pretrained_ckpt_path: "logs/ckpts/midi_dit_2025-11-28-02-08-07/epoch79-val_loss57.9975.ckpt"  # 注释掉，确保新训练从头开始
+
+# Model Configuration
+model:
+  _target_: main.module_midi_dit.MIDIDiTLightningModule
+
+  # Model architecture
+  patch_dim: 256        # 16x16 = 256
+  embed_dim: 512        # Transformer embedding dimension (约75M参数)
+  depth: 8              # Number of DiT blocks
+  num_heads: 8          # Attention heads (匹配 embed_dim=512)
+  max_seq_len: 1024     # Maximum sequence length
+  mlp_ratio: 4.0        # MLP hidden dimension ratio
+  dropout: 0.15         # Dropout rate (优化: 0.12->0.15, 增强正则化防止过拟合)
+  num_classes: 10       # Number of style/genre classes
+  use_text_conditioning: True  # Enable text-to-MIDI
+
+  # Training hyperparameters
+  lr: 6e-5              # Learning rate (保持不变)
+  lr_beta1: 0.9         # Adam beta1
+  lr_beta2: 0.999       # Adam beta2
+  lr_eps: 1e-8          # Adam epsilon
+  lr_weight_decay: 0.03 # Weight decay (优化: 0.01->0.03, 增强正则化)
+  lr_warmup_steps: 2000 # Warmup steps (优化: 3000->2000, 小模型收敛更快)
+
+  # Diffusion parameters
+  sigma_min: 0.002      # Minimum noise level
+  sigma_max: 80.0       # Maximum noise level
+  rho: 7.0              # Noise schedule parameter
+
+  # Data parameters
+  patch_size: ${patch_size}
+
+# Data Module Configuration
+datamodule:
+  _target_: main.module_midi_dit.MIDIDataModule
+  
+  # Dataset parameters
+  data_path: "midi_data/babyslakh/babyslakh_16k"
+  batch_size: 16        # 优化: 12->16, 模型变小后可增加batch size
+  num_workers: 4        # Optimized for CPU efficiency (was 8)
+  val_split: 0.15       # 增加验证集以获得更稳定的评估
+  
+  # Data Augmentation (v5.1 optimized)
+  use_augmentation: True     # Enable data augmentation
+  augmentation_strength: light  # 'light', 'medium', or 'heavy' - v5.1使用light强度
+  
+  # MIDI processing parameters
+  patch_size: ${patch_size}
+  sample_rate: ${sample_rate}
+  pitch_range: ${pitch_range}
+  max_duration: ${max_duration}
+  min_notes: ${min_notes}
+  max_files: null       # 使用 babyslakh 全部文件 (~150-200 个)
+
+# Training Callbacks
+callbacks:
+  # rich_progress_bar:
+  #   _target_: pytorch_lightning.callbacks.RichProgressBar
+  
+  model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    monitor: "val_loss"
+    save_top_k: 2
+    save_last: True
+    mode: "min"
+    verbose: True
+    every_n_epochs: 2
+    dirpath: ${logs_dir}/ckpts/midi_dit_${now:%Y-%m-%d-%H-%M-%S}
+    filename: '{epoch:02d}-{val_loss:.4f}'
+  
+  early_stopping:
+    _target_: pytorch_lightning.callbacks.EarlyStopping
+    monitor: "val_loss"
+    patience: 12          # 优化: 15->12, 小模型收敛更快
+    mode: "min"
+    verbose: True
+  
+  model_summary:
+    _target_: pytorch_lightning.callbacks.RichModelSummary
+    max_depth: 2
+  
+  lr_monitor:
+    _target_: pytorch_lightning.callbacks.LearningRateMonitor
+    logging_interval: "step"
+
+# Logging
+loggers:
+  wandb:
+    _target_: pytorch_lightning.loggers.wandb.WandbLogger
+    project: ${oc.env:WANDB_PROJECT, "midi-dit"}
+    entity: ${oc.env:WANDB_ENTITY, null}
+    job_type: "train"
+    group: "babyslakh"
+    save_dir: ${logs_dir}
+    offline: True
+
+# PyTorch Lightning Trainer
+trainer:
+  _target_: pytorch_lightning.Trainer
+  
+  # Hardware
+  accelerator: "gpu"    # Use GPU acceleration
+  devices: 1            # Number of GPUs
+  precision: 16         # Mixed precision training
+  
+  # Training duration
+  max_epochs: 50        # 充分训练以找到最优点（已改为50）
+  max_steps: -1
+  
+  # Validation
+  check_val_every_n_epoch: 2  # 每2个epoch验证一次,节省训练时间
+  val_check_interval: 1.0
+  
+  # Optimization
+  gradient_clip_val: 0.5        # 降低梯度裁剪阈值防止爆炸
+  accumulate_grad_batches: 1    # 优化: 2->1, batch_size已增加到16,累积可取消
+  gradient_clip_algorithm: "norm"  # 使用梯度范数裁剪
+  
+  # Debugging
+  fast_dev_run: False
+  overfit_batches: 0
+  
+  # Logging
+  log_every_n_steps: ${log_every_n_steps}
+  
+  # Reproducibility
+  deterministic: False
+  benchmark: True
+  
+  # Other
+  enable_progress_bar: True
+  enable_model_summary: True
+
+# Hydra configuration
+defaults:
+  - _self_
+
+# Paths (using OmegaConf interpolation)
+logs_dir: logs
+
+# Environment variables
+hydra:
+  run:
+    dir: ${logs_dir}/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ${logs_dir}/multiruns/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
