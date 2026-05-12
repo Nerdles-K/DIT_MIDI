@@ -27,9 +27,10 @@ env/
 *.zip
 /generated.mid
 
-# ===== IDE / OS =====
+# ===== IDE / OS / 工具本地配置 =====
 .vscode/
 .idea/
+.claude/
 *.swp
 .DS_Store
 Thumbs.db
